@@ -1,0 +1,55 @@
+DROP DATABASE IF EXISTS soccer_league;
+
+CREATE DATABASE soccer_league;
+
+\c soccer_league
+
+CREATE TABLE teams
+(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(45) NOT NULL
+);
+
+CREATE TABLE players
+(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(45) NOT NULL,
+    team_id INTEGER REFERENCES teams ON DELETE SET NULL
+);
+
+CREATE TABLE refs
+(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(45) NOT NULL
+);
+
+CREATE TABLE seasons
+(
+    id SERIAL PRIMARY KEY,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL
+);
+
+CREATE TABLE games
+(
+    id SERIAL PRIMARY KEY,
+    season_id INTEGER REFERENCES seasons ON DELETE CASCADE,
+    game_day DATE NOT NULL,
+    team_1_id INTEGER REFERENCES teams ON DELETE SET NULL,
+    team_2_id INTEGER REFERENCES teams ON DELETE SET NULL,
+    winning_team_id INTEGER REFERENCES teams ON DELETE SET NULL
+);
+
+CREATE TABLE ref_game
+(
+    id SERIAL PRIMARY KEY,
+    game_id INTEGER REFERENCES games ON DELETE CASCADE,
+    ref_id INTEGER REFERENCES refs ON DELETE CASCADE
+);
+
+CREATE TABLE scores
+(
+    id SERIAL PRIMARY KEY,
+    player_id INTEGER REFERENCES players ON DELETE CASCADE,
+    game_id INTEGER REFERENCES games ON DELETE CASCADE
+);
